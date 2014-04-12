@@ -1,0 +1,10 @@
+---
+# Example. This should be placed somewhere in host_vars
+ipmi:
+# Set vlan=0 to disable
+  vlan: 10
+  address: 10.10.10.10
+  address_source: StaticAddress
+  netmask: 255.255.255.0
+  gw: 0.0.0.0
+

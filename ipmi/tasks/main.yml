@@ -1,0 +1,21 @@
+- name: install ipmitool
+  apt: pkg=ipmitool state=latest
+- name: create directory for ansible custom facts
+  file: state=directory recurse=yes path=/etc/ansible/facts.d
+- name: install custom impi fact
+  copy: src=ipmi.fact dest=/etc/ansible/facts.d
+- name: re-read facts after adding custom fact
+  setup: filter=ansible_local
+- name: set ipmi vlan
+  command: ipmitool lan set 1 vlan id "{{ ipmi.vlan }}"
+  when: ansible_local.ipmi.lan_1.qvlanid != ipmi.vlan|string
+- name: set ipmi address
+  command: ipmitool lan set 1 ipaddr "{{ ipmi.address }}"
+  when: ansible_local.ipmi.lan_1.ipaddress != ipmi.address
+- name: set ipmi netmask
+  command: ipmitool lan set 1 netmask "{{ ipmi.netmask }}"
+  when: ansible_local.ipmi.lan_1.subnetmask != ipmi.netmask
+- name: set ipmi gateway
+  command: ipmitool lan set 1 defgw ipaddr "{{ ipmi.gw }}"
+  when: ansible_local.ipmi.lan_1.defaultgatewayip != ipmi.gw
+
