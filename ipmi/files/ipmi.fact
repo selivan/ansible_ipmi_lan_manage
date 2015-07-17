@@ -4,10 +4,10 @@
 channel=1
 
 echo "{"
-echo "\"lan_$channel\" : {"
+echo "  \"lan_$channel\": {"
 
 first_line=1
-ipmitool lan print $channel | tr -d ' ' | while read line; do
+sudo ipmitool lan print $channel | tr -d ' ' | while read line; do
   key=`echo $line | cut -d: -f 1 | tr -d '.' | tr -d [0-9] | tr '[:upper:]' '[:lower:]'`
   if [ -n "$key" ]; then
     if [ $first_line -eq 1 ]; then
@@ -16,11 +16,11 @@ ipmitool lan print $channel | tr -d ' ' | while read line; do
       echo ","
     fi
     value=`echo $line | cut -d: -f 2-`;
-    echo -n "\"$key\":\"$value\""
+    echo -n "    \"$key\": \"$value\""
   fi
 done
 
 echo
-echo "}"
+echo "  }"
 echo "}"
 
