@@ -23,7 +23,7 @@
   file:
     state: directory
     recurse: yes
-    path: ./host_vars/{{ ansible_nodename }}
+    path: ./host_vars/{{ ansible_nodename|lower }}
   when: get_ipmi
 
 - name: save ipmi facts
