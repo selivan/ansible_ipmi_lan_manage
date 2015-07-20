@@ -13,4 +13,3 @@ Set to True to query the current IPMI settings for the host and save them to hos
 This role will only report on differences. Set this var to True to
 "arm" ipmi and run the ipmi lan set commands if necessary .
 	set_ipmi: True  # Default: False
-
