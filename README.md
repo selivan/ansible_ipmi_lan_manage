@@ -7,11 +7,12 @@ Run with the -s / --sudo option, needed for ipmitool to query successfully and c
 
 # Variables:
 
-Set to True to query the current IPMI settings for the host and save them to host_vars/ipmi
+Query the current IPMI settings for each host and attempt to save them to host_vars/{{ inventory_hostname_short }}/ipmi
+unless you already ipmi: defined somewhere.
 
 	get_ipmi: True  # Default: False
 
 This role will only report on differences. Set this var to True to
-"arm" ipmi and run the ipmi lan set commands if necessary .
+"arm" ipmi and run the `ipmi lan set` commands if necessary.
 
 	set_ipmi: True  # Default: False

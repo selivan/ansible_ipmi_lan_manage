@@ -38,7 +38,7 @@
         address: {{ ansible_local.ipmi.lan_1.ipaddress }}
         address_source: StaticAddress
         netmask: {{ ansible_local.ipmi.lan_1.subnetmask }}
-        gw: {{ ansible_local.ipmi.lan_1.defaultgatewayip }}
+        gw: {{ ansible_local.ipmi.lan_1.defaultgatewayip }}\n
     dest: ./host_vars/{{ inventory_hostname_short }}/ipmi
   sudo: no
   when: get_ipmi
