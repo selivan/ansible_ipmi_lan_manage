@@ -1,21 +1,74 @@
+---
 - name: install ipmitool
   apt: pkg=ipmitool state=latest
+- name: load ipmi kernel modules
+  modprobe: name={{ item }} state=present
+  with_items:
+    - ipmi_si
+    - ipmi_devintf
+#    - ipmi_msghandler
+#    - ipmi_watchdog
 - name: create directory for ansible custom facts
   file: state=directory recurse=yes path=/etc/ansible/facts.d
 - name: install custom impi fact
-  copy: src=ipmi.fact dest=/etc/ansible/facts.d
-- name: re-read facts after adding custom fact
+  copy: src=ipmi.fact dest=/etc/ansible/facts.d mode=0755
+  register: config_status
+- name: reread facts after adding custom fact
   setup: filter=ansible_local
+  when: config_status|changed
+
+- name: create local host_vars directory
+  connection: local
+  sudo: no
+  file:
+    state: directory
+    recurse: yes
+    path: ./host_vars/{{ inventory_hostname_short }}
+  when: get_ipmi
+
+- name: save ipmi facts
+  connection: local
+  copy: 
+    content: |
+      # {{ ansible_hostname }} at {{ ansible_ssh_host }}
+      ipmi:
+        vlan: {% if ansible_local.ipmi.lan_1.qvlanid == "Disabled" %}0
+      {% else %}{{ ansible_local.ipmi.lan_1.qvlanid}}
+      {% endif %}
+        address: {{ ansible_local.ipmi.lan_1.ipaddress }}
+        address_source: StaticAddress
+        netmask: {{ ansible_local.ipmi.lan_1.subnetmask }}
+        gw: {{ ansible_local.ipmi.lan_1.defaultgatewayip }}
+    dest: ./host_vars/{{ inventory_hostname_short }}/ipmi
+  sudo: no
+  when: get_ipmi
+
+## only if set_ipmi == True and ipmi host_var exists
+- debug: msg="vlan match={{ ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or ( ansible_local.ipmi.lan_1.qvlanid == 'Disabled' and ipmi.vlan == 0 ) }} current={{ ansible_local.ipmi.lan_1.qvlanid }} new={{ ipmi.vlan }}"
+  when: ipmi is defined
 - name: set ipmi vlan
-  command: ipmitool lan set 1 vlan id "{{ ipmi.vlan }}"
-  when: ansible_local.ipmi.lan_1.qvlanid != ipmi.vlan|string
+  command: ipmitool lan set 1 vlan id "{% if ipmi.vlan == 0 %}off{% else %}{{ ipmi.vlan }}{% endif %}"
+  when: set_ipmi and ipmi is defined and
+        not ( ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or 
+        ( ansible_local.ipmi.lan_1.qvlanid == 'Disabled' and ipmi.vlan == 0 ))
+
+- debug: msg="ipaddr match={{ ansible_local.ipmi.lan_1.ipaddress == ipmi.address }} current={{ ansible_local.ipmi.lan_1.ipaddress }} new={{ ipmi.address }}"
+  when: ipmi is defined
 - name: set ipmi address
   command: ipmitool lan set 1 ipaddr "{{ ipmi.address }}"
-  when: ansible_local.ipmi.lan_1.ipaddress != ipmi.address
+  when: set_ipmi and ipmi is defined and
+        ansible_local.ipmi.lan_1.ipaddress != ipmi.address
+
+- debug: msg="netmask match={{ ansible_local.ipmi.lan_1.subnetmask == ipmi.netmask }} current={{ ansible_local.ipmi.lan_1.subnetmask }} new={{ ipmi.netmask }}"
+  when: ipmi is defined
 - name: set ipmi netmask
   command: ipmitool lan set 1 netmask "{{ ipmi.netmask }}"
-  when: ansible_local.ipmi.lan_1.subnetmask != ipmi.netmask
+  when: set_ipmi and ipmi is defined and
+        ansible_local.ipmi.lan_1.subnetmask != ipmi.netmask
+
+- debug: msg="gateway match={{ ansible_local.ipmi.lan_1.defaultgatewayip == ipmi.gw }} current={{ ansible_local.ipmi.lan_1.defaultgatewayip }} new={{ ipmi.gw }}"
+  when: ipmi is defined
 - name: set ipmi gateway
   command: ipmitool lan set 1 defgw ipaddr "{{ ipmi.gw }}"
-  when: ansible_local.ipmi.lan_1.defaultgatewayip != ipmi.gw
-
+  when: set_ipmi and ipmi is defined and
+        ansible_local.ipmi.lan_1.defaultgatewayip != ipmi.gw
