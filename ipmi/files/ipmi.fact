@@ -7,7 +7,7 @@ echo "{"
 echo "  \"lan_$channel\": {"
 
 first_line=1
-sudo ipmitool lan print $channel | tr -d ' ' | while read line; do
+ipmitool lan print $channel | tr -d ' ' | while read line; do
   key=`echo $line | cut -d: -f 1 | tr -d '.' | tr -d [0-9] | tr '[:upper:]' '[:lower:]'`
   if [ -n "$key" ]; then
     if [ $first_line -eq 1 ]; then
