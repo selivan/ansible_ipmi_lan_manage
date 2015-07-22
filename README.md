@@ -7,8 +7,8 @@ Run with the -s / --sudo option, needed for ipmitool to query successfully and c
 
 # Variables:
 
-Query the current IPMI settings for each host and attempt to save them to host_vars/{{ inventory_hostname_short }}/ipmi
-unless you already ipmi: defined somewhere.
+Query the current IPMI settings for each host and attempt to save them to host_vars/{{inventory_hostname_short}}/ipmi
+unless you already have ipmi: defined somewhere.
 
 	get_ipmi: True  # Default: False
 
