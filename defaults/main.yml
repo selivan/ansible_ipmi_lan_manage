@@ -1,3 +1,4 @@
 ## Override these in host_vars or env to "arm" the ipmi setter
 get_ipmi: False
 set_ipmi: False
+lan_channel: 1
