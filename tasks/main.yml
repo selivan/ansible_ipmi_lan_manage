@@ -10,9 +10,11 @@
 #    - ipmi_watchdog
 - name: create directory for ansible custom facts
   file: state=directory recurse=yes path=/etc/ansible/facts.d
+
 - name: install custom impi fact
-  copy: src=ipmi.fact dest=/etc/ansible/facts.d mode=0755
+  template: src=ipmi.fact.j2 dest=/etc/ansible/facts.d/ipmi.fact mode=0755
   register: config_status
+
 - name: reread facts after adding custom fact
   setup: filter=ansible_local
   when: config_status|changed
