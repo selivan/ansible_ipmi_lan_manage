@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: Selivanov Pavel
+  description: Ansible role for managing IPMI LAN settings with ipmitool.
+  license: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+  min_ansible_version: 1.8
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  categories:
+  - system
+dependencies: []
