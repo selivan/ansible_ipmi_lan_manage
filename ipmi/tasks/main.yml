@@ -30,7 +30,7 @@
   connection: local
   copy: 
     content: |
-      # {{ ansible_hostname }} at {{ ansible_ssh_host }}
+      # {{ ansible_hostname }} at {{ inventory_hostname }} {{ ansible_ssh_host if ansible_ssh_host is defined else '' }}
       ipmi:
         vlan: {% if ansible_local.ipmi.lan_1.qvlanid == "Disabled" %}0
       {% else %}{{ ansible_local.ipmi.lan_1.qvlanid}}
