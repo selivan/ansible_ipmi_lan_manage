@@ -10,9 +10,11 @@
 #    - ipmi_watchdog
 - name: create directory for ansible custom facts
   file: state=directory recurse=yes path=/etc/ansible/facts.d
+
 - name: install custom impi fact
-  copy: src=ipmi.fact dest=/etc/ansible/facts.d mode=0755
+  template: src=ipmi.fact.j2 dest=/etc/ansible/facts.d/ipmi.fact mode=0755
   register: config_status
+
 - name: reread facts after adding custom fact
   setup: filter=ansible_local
   when: config_status|changed
@@ -30,7 +32,7 @@
   connection: local
   copy: 
     content: |
-      # {{ ansible_hostname }} at {{ ansible_ssh_host }}
+      # {{ ansible_hostname }} at {{ inventory_hostname }} {{ ansible_ssh_host if ansible_ssh_host is defined else '' }}
       ipmi:
         vlan: {% if ansible_local.ipmi.lan_1.qvlanid == "Disabled" %}0
       {% else %}{{ ansible_local.ipmi.lan_1.qvlanid}}
