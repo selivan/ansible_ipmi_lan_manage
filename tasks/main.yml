@@ -15,9 +15,9 @@
   template: src=ipmi.fact.j2 dest=/etc/ansible/facts.d/ipmi.fact mode=0755
   register: config_status
 
-- name: reread facts after adding custom fact
+- name: regather facts using ipmitool
+  sudo: yes
   setup: filter=ansible_local
-  when: config_status|changed
 
 - name: create local host_vars directory
   connection: local
