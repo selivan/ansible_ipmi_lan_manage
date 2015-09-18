@@ -15,9 +15,10 @@
   template: src=ipmi.fact.j2 dest=/etc/ansible/facts.d/ipmi.fact mode=0755
   register: config_status
 
-- name: regather facts using ipmitool
-  sudo: yes
+- name: regather facts using sudo for ipmitool
+  ## setup module returns empty ipmi section unless it runs as root
   setup: filter=ansible_local
+  when: config_status|changed or not ansible_local.ipmi.lan_1
 
 - name: create local host_vars directory
   connection: local
@@ -30,7 +31,8 @@
 
 - name: save ipmi facts
   connection: local
-  copy: 
+  sudo: no
+  copy:
     content: |
       # {{ ansible_hostname }} at {{ inventory_hostname }} {{ ansible_ssh_host if ansible_ssh_host is defined else '' }}
       ipmi:
@@ -42,7 +44,6 @@
         netmask: {{ ansible_local.ipmi.lan_1.subnetmask }}
         gw: {{ ansible_local.ipmi.lan_1.defaultgatewayip }}\n
     dest: ./host_vars/{{ inventory_hostname_short }}/ipmi
-  sudo: no
   when: get_ipmi
 
 ## only if set_ipmi == True and ipmi host_var exists
@@ -51,7 +52,7 @@
 - name: set ipmi vlan
   command: ipmitool lan set 1 vlan id "{% if ipmi.vlan == 0 %}off{% else %}{{ ipmi.vlan }}{% endif %}"
   when: set_ipmi and ipmi is defined and
-        not ( ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or 
+        not ( ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or
         ( ansible_local.ipmi.lan_1.qvlanid == 'Disabled' and ipmi.vlan == 0 ))
 
 - debug: msg="ipaddr match={{ ansible_local.ipmi.lan_1.ipaddress == ipmi.address }} current={{ ansible_local.ipmi.lan_1.ipaddress }} new={{ ipmi.address }}"
