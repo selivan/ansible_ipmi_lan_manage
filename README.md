@@ -3,12 +3,12 @@ ansible_ipmi_lan_manage
 
 Ansible role for managing IPMI LAN settings with ipmitool. Local fact in /etc/ansible/facts.d on remote host is created and used.
 
-This role needs to run as sudo, so include it in your playbook with:
+This role needs to run as root to use ipmitool, so include it in your playbook with:
 ```
 roles:
-  - { role: ansible_ipmi_lan_mange, sudo: yes }
+  - { role: ansible_ipmi_lan_manage, sudo: yes }
 ```
-or simply use `--sudo` to your ansible-playbook command.
+or simply use `--sudo` with your ansible-playbook command.
 
 # Variables:
 
