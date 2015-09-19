@@ -17,6 +17,7 @@
 
 - name: regather facts using sudo for ipmitool
   ## setup module returns empty ipmi section unless it runs as root
+  sudo: yes
   setup: filter=ansible_local
   when: config_status|changed or not ansible_local.ipmi.lan_1
 
