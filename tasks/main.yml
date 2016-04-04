@@ -17,13 +17,13 @@
 
 - name: regather facts using sudo for ipmitool
   ## setup module returns empty ipmi section unless it runs as root
-  sudo: yes
+  become: yes
   setup: filter=ansible_local
   when: config_status|changed or not ansible_local.ipmi.lan_1
 
 - name: create local host_vars directory
   connection: local
-  sudo: no
+  become: no
   file:
     state: directory
     recurse: yes
@@ -32,7 +32,7 @@
 
 - name: save ipmi facts
   connection: local
-  sudo: no
+  become: no
   copy:
     content: |
       # {{ ansible_hostname }} at {{ inventory_hostname }} {{ ansible_ssh_host if ansible_ssh_host is defined else '' }}
