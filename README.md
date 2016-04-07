@@ -23,3 +23,5 @@ set_ipmi: True  # Default: False
 ```
 By default this role will only report on differences.  Use `-e "set_ipmi=True"` to
 "arm" ipmi and run the `ipmi lan set` commands if necessary.
+
+**P.S.** If this code is useful for you - don't forget to put a star on it's [github repo](https://github.com/selivan/ansible_ipmi_lan_manage).
