@@ -3,11 +3,15 @@ galaxy_info:
   author: Selivanov Pavel and Martin Eggen
   description: Ansible role for managing IPMI LAN settings with ipmitool.
   license: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-  min_ansible_version: 1.8
+  min_ansible_version: 2.0
   platforms:
   - name: Ubuntu
     versions:
-    - trusty
-  categories:
+    - all
+  - name: EL
+    versions:
+    - all
+  galaxy_tags:
+  - impi
   - system
 dependencies: []
