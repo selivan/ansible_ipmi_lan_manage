@@ -8,17 +8,17 @@ This role needs to run as root to use ipmitool, so include it in your playbook w
 roles:
   - { role: ansible_ipmi_lan_manage, become: yes }
 ```
-or simply use `--sudo` with your ansible-playbook command.
+or use `ansible-playbook --become`.
 
 # Variables:
 
-```bash
+```yaml
 get_ipmi: True  # Default: False
 ```
 Query the current IPMI settings for each host and attempt to save them to host_vars/{{inventory_hostname_short}}/ipmi
 unless you already have ipmi: defined somewhere.
 
-```bash
+```yaml
 set_ipmi: True  # Default: False
 ```
 By default this role will only report on differences.  Use `-e "set_ipmi=True"` to
