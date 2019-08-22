@@ -26,7 +26,7 @@
   ## setup module returns empty ipmi section unless it runs as root
   become: yes
   setup: filter=ansible_local
-  when: config_status|changed or not ansible_local.ipmi.lan_1
+  when: config_status is changed or not ansible_local.ipmi.lan_1
 
 - name: create local host_vars directory
   connection: local
