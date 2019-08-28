@@ -3,6 +3,8 @@ get_ipmi: False
 set_ipmi: False
 lan_channel: 1
 
+impi_host_settings_save_path: "{{ role_path }}/../../host_vars/{{ inventory_hostname_short }}/ipmi"
+
 impi_kernel_modules:
   - ipmi_si
   - ipmi_devintf

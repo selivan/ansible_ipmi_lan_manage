@@ -1,27 +1,28 @@
-# ansible_ipmi_lan_manage
+# Ansible role to manage IPMI settings
 
-Ansible role for managing IPMI LAN settings with [ipmitool](https://github.com/ipmitool/ipmitool). Local fact in /etc/ansible/facts.d on remote host is created and used.
+Ansible role for managing IPMI LAN settings with [ipmitool](https://github.com/ipmitool/ipmitool). Local fact script in /etc/ansible/facts.d on remote host is created and used later.
 
-This role needs to run as root to use ipmitool, so include it in your playbook with:
-```
-roles:
-  - { role: ansible_ipmi_lan_manage, become: yes }
-```
-or use `ansible-playbook --become`.
+This role needs to be run as root, so use it with `become: yes`.
 
-# Variables
+## Variables
 
 ```yaml
 get_ipmi: True  # Default: False
 ```
-Query the current IPMI settings for each host and attempt to save them to host_vars/{{inventory_hostname_short}}/ipmi
-unless you already have ipmi: defined somewhere.
+
+Query the current IPMI settings for each host and attempt to save them to `impi_host_settings_save_path` unless you already have ipmi: defined somewhere.
+
+```yaml
+impi_host_settings_save_path:
+```
+
+Path to save IMPI settings for host when `get_impi` is `True`.
 
 ```yaml
 set_ipmi: True  # Default: False
 ```
-By default this role will only report on differences.  Use `-e "set_ipmi=True"` to
-"arm" ipmi and run the `ipmi lan set` commands if necessary.
+
+By default this role will only report differences between saved and actual IPMI settings.  Use `-e "set_ipmi=True"` to "arm" ipmi and run the `ipmi lan set` commands if this settings differ.
 
 Variables(usually those are host variables) used by `set_impi`:
 

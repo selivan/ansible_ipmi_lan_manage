@@ -47,7 +47,7 @@
         address_source: StaticAddress
         netmask: {{ ansible_local.ipmi.lan_1.subnetmask }}
         gw: {{ ansible_local.ipmi.lan_1.defaultgatewayip }}\n
-    dest: ./host_vars/{{ inventory_hostname_short }}/ipmi
+    dest: "{{ impi_host_settings_save_path }}"
   when: get_ipmi
 
 ## only if set_ipmi == True and ipmi host_var exists
