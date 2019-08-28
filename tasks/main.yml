@@ -33,7 +33,7 @@
     path: ./host_vars/{{ inventory_hostname_short }}
   when: get_ipmi
 
-- name: save ipmi facts
+- name: save ipmi facts to local file in host_vars
   connection: local
   become: no
   copy:
