@@ -2,3 +2,9 @@
 get_ipmi: False
 set_ipmi: False
 lan_channel: 1
+
+impi_kernel_modules:
+  - ipmi_si
+  - ipmi_devintf
+#  - ipmi_msghandler
+#  - ipmi_watchdog
