@@ -1,10 +1,10 @@
 ---
 - name: install ipmitool
-  apt: pkg=ipmitool state=latest
+  apt: pkg=ipmitool state=present
   when: ansible_pkg_mgr=="apt"
 
 - name: install ipmitool
-  yum: pkg=ipmitool state=latest
+  yum: pkg=ipmitool state=present
   when: ansible_pkg_mgr=="yum"
 
 - name: load ipmi kernel modules
@@ -40,7 +40,7 @@
       # {{ ansible_hostname }} at {{ inventory_hostname }} {{ ansible_ssh_host if ansible_ssh_host is defined else '' }}
       ipmi:
         vlan: {% if ansible_local.ipmi.lan_1.qvlanid == "Disabled" %}0
-      {% else %}{{ ansible_local.ipmi.lan_1.qvlanid}}
+      {% else %}{{ ansible_local.ipmi.lan_1.qvlanid }}
       {% endif %}
         address: {{ ansible_local.ipmi.lan_1.ipaddress }}
         address_source: StaticAddress
